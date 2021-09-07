@@ -1,0 +1,31 @@
+---
+title: "IzertisTemplate"
+author: Pablo Rodríguez López
+output: izertisr::izertis_report
+date: "`r Sys.Date()`"
+#bibliography: bibliography.bib
+abstract: "Your text block here"
+---
+
+```{r manage_packages, include=FALSE}
+packages <- c("knitr","tidyverse")
+lapply(packages,require,character.only = TRUE)
+```
+
+```{r knitr_init, include=FALSE}
+## Global options
+opts_chunk$set(echo = FALSE,
+               cache = FALSE,
+               prompt = FALSE,
+               tidy = TRUE,
+               comment = NA,
+               message = FALSE,
+               warning = FALSE)
+```
+
+
+```{r setup, include=FALSE}
+htmltools::tagList(rmarkdown::html_dependency_font_awesome())
+```
+
+
