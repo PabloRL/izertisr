@@ -6,6 +6,7 @@
  *    user zoom.
  */
 
+
 @font-face {
   font-family: Montserrat, 'Open Sans';
   font-style: normal;
@@ -111,16 +112,19 @@ a {
  * Improve readability when focused and also mouse hovered in all browsers.
  */
 a:link {
+
     color: #EB5B5B;
 }
 
 a:visited {
-    color: ;
+    color: #434040 ;
 }
 
 a:hover {
 	color: #363D58;
 }
+
+
 
 /* Text-level semantics
    ========================================================================== */
@@ -160,30 +164,37 @@ h1 {
   margin: 0.67em 0;
   font-size: 1.3em;
   color: #EB5B5B;
+
 }
 
 h2 {
   margin: 0.72em 0;
   font-size: 1.1em;
   color: #363D58;
+
 }
 
 h3 {
   margin: 0.75em 0;
   font-size: 0.9em;
   color: ##363D58;
+
+
 }
 
 h4 {
   margin: 0.77em 0;
   font-size: 0.8em;
   color: #363D58;
+
 }
 
 h5 {
   margin: 0.79em 0;
   font-size: 0.7em;
   color: #363D58;
+
+
 }
 
 /**
@@ -298,18 +309,22 @@ table {
 }
 
 th, td {
+
   border-bottom: 1px solid #434040);
   text-align: left;
   padding: 10px;
 }
 
 th {
+
   background-color: #EB5B5B;
   color: white;
 }
 
 tr:nth-child(odd) {
+
   background-color: #363D58;
+  background-color: var(--maincolor2);
   color: white;
 }
 
@@ -333,11 +348,13 @@ p {
 }
 
 a {
+
   color: #EB5B5B;
 }
 a:hover {
   color: #363D58;
 }
+
 
 header {
   padding-top: 40px;
