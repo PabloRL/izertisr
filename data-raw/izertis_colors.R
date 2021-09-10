@@ -14,3 +14,7 @@ usethis::use_data(cream_can, overwrite = TRUE)
 mine_shaft <- "#434040"
 
 usethis::use_data(mine_shaft, overwrite = TRUE)
+
+izertis_palette <- c("#EB5B5B","#363D58","#F5C851","#434040")
+
+usethis::use_data(izertis_palette, overwrite = TRUE)
