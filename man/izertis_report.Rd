@@ -4,7 +4,7 @@
 \alias{izertis_report}
 \title{Creacion de template html de Izertis}
 \usage{
-izertis_report(toc = TRUE, toc_float = FALSE)
+izertis_report(toc = TRUE, toc_float = FALSE, keep_md = FALSE)
 }
 \arguments{
 \item{toc}{}

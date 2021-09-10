@@ -2,5 +2,11 @@
 
 export(clean_numeric_iqr)
 export(izertis_report)
+export(redes_report)
+export(scale_color_izertis)
+export(scale_colour_izertis)
+export(scale_fill_izertis)
+export(theme_izertis)
+import(ggplot2)
 importFrom(rmarkdown,html_document)
 importFrom(rmarkdown,includes)
