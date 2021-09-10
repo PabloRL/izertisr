@@ -8,7 +8,7 @@
 #' @return
 #' @export
 #'
-izertis_report <- function(toc = TRUE, toc_float=FALSE) {
+izertis_report <- function(toc = TRUE, toc_float = FALSE, keep_md = FALSE) {
 
   
   # get the locations of resource files located within the package
@@ -20,6 +20,7 @@ izertis_report <- function(toc = TRUE, toc_float=FALSE) {
   
   # call the base html_document function
   rmarkdown::html_document(toc = toc,
+                           keep_md = keep_md,
                            number_sections = TRUE,
                            df_print = "kable",
                            toc_float = toc_float,
