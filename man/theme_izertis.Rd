@@ -4,17 +4,15 @@
 \alias{theme_izertis}
 \title{Izertis theme}
 \usage{
-theme_izertis(
-  main_color1 = coral_red,
-  main_color2 = cobalt,
-  secondary_color1 = cream_can,
-  secondary_color2 = mine_shaft
-)
+theme_izertis(main_color1 = coral_red, main_color2 = cobalt,
+  secondary_color1 = cream_can, secondary_color2 = mine_shaft)
 }
 \arguments{
 \item{main_color1}{color principal 1}
 
 \item{main_color2}{color principal 2}
+
+\item{secondary_color1}{color secondary 1}
 
 \item{secondary_color1}{color secondary 2}
 }

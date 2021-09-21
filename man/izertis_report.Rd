@@ -11,9 +11,6 @@ izertis_report(toc = TRUE, toc_float = FALSE, keep_md = FALSE)
 
 \item{toc_float}{}
 }
-\value{
-
-}
 \description{
 Creacion de template html de Izertis
 }
