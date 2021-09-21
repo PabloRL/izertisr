@@ -94,7 +94,7 @@ identifica_filas <- function(x,condition,fill=NA){
   #Extraigo el número de filas que cumplen la condición
   id.fila <- which(eval(parse(text = condition.text)))
   #Calculo los tramos contiguos
-  tramo <- tramos(id.fila,1)
+  tramo <- ifilas_tramos(id.fila,1)
   # El vector que devuelve la funcion debe ser del mismo tamaño que el vector x. las filas que no cumplen la condicion seran rellenadas por
   #fill
   out <- as.character(rep(fill,length(x)))
@@ -122,7 +122,7 @@ cuenta_repeticiones_consecutivas <- function(x){
     x_rep_max <- NA
   }else{
     dif = c(0,diff(x))
-    tramos <- tramos(dif,0)
+    tramos <- ifilas_tramos(dif,0)
     table_rep_max <- which.max(table(tramos))
     repeticiones <- as.numeric(table_rep_max)
     tramo_id <- as.numeric(attr(table_rep_max,"names"))
