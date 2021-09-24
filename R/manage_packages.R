@@ -51,7 +51,8 @@ download_packages_and_deps <- function(pkgs,
     
     lapply(pkgs_to_download,unlink,recursive = TRUE)
     
-    pkgs_to_download <<- deps[!(deps %in% row.names(installed.packages()) | packages_are_downloaded(deps,path))]
+    
+    pkgs_to_download <- deps[!(deps %in% row.names(installed.packages()) | packages_are_downloaded(deps,path))]
     
     
     
@@ -81,7 +82,7 @@ install_locale_packages <- function(path = "extrapackages/") {
     
     lapply(packages_to_intall_file, install.packages, repos = NULL)
     
-    packages_to_intall_file <<- downloaded_packages_file[!(downloaded_packages_name %in% row.names(installed.packages()))]
+    packages_to_intall_file <- downloaded_packages_file[!(downloaded_packages_name %in% row.names(installed.packages()))]
     
   }
   
