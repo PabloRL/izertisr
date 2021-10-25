@@ -20,7 +20,7 @@ download_packages_and_deps <- function(pkgs,
   
   while (length(pkgs_to_download) > 0 ) {
     
-  
+    
     if (!dir.exists(path))
       dir.create(path)
     

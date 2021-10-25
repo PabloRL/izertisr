@@ -1,6 +1,6 @@
 Package: izertisr
 Title: Librería con funciones muy utilizadas en el trabajo en Izertis de desarrollo propio.
-Version: 0.0.0.9000
+Version: 1.0.0
 Authors@R: 
     person(given = "Pablo",
            family = "Rodriguez",
