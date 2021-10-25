@@ -20,7 +20,7 @@ download_packages_and_deps <- function(pkgs,
   
   while (length(pkgs_to_download) > 0 ) {
     
-    
+  
     if (!dir.exists(path))
       dir.create(path)
     
@@ -51,7 +51,7 @@ download_packages_and_deps <- function(pkgs,
     
     lapply(pkgs_to_download,unlink,recursive = TRUE)
     
-    
+        
     pkgs_to_download <- deps[!(deps %in% row.names(installed.packages()) | packages_are_downloaded(deps,path))]
     
     
