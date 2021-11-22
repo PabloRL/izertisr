@@ -14,24 +14,24 @@ download_packages_and_deps <- function(pkgs,
                                       fields = c("Depends","Imports","LinkingTo")){
   
 
+ 
   
-  pkgs_to_download <- pkgs[!(pkgs %in% row.names(installed.packages()) | packages_are_downloaded(pkgs,path))]
+  pkgs_to_download <- pkgs[!(pkgs %in% row.names(installed.packages()) | packages_are_downloaded(path,pkgs))]
   
   
   while (length(pkgs_to_download) > 0 ) {
     
-    
+  
     if (!dir.exists(path))
       dir.create(path)
-    
-    
+
     dowloaded_packages_data <- download.packages(pkgs_to_download,path)
     
     lapply(dowloaded_packages_data[,2],untar)
     
     pkgDescFile <- sapply(pkgs_to_download, function(pkg) paste0(pkg,"/DESCRIPTION"))
     
-    DEPS <- lapply(pkgDescFile, function(file) {
+    DEPS_VERSIONS <- lapply(pkgDescFile, function(file) {
       
       theseDeps <- combineDcfFields(as.data.frame(readDcf(file)), fields)
       
@@ -43,16 +43,32 @@ download_packages_and_deps <- function(pkgs,
         gsub("[[:space:]].*", "", splat, perl = TRUE)
       })
       
-      unlist(splitDeps, use.names = FALSE)
+      splitVers <- lapply(theseDeps, function(x) {
+        if (is.na(x)) return(NULL)
+        splat <- unlist(strsplit(x, ",[[:space:]]*"))
+        ## Remove name information as this function only returns package version
+        splat_out <- gsub("(^.*\\([^0-9]*)([0-9\\.]*)(.*)", "\\2",splat)
+        splat_out[!grepl("\\(>.*[0-9\\.]*\\)",splat)] <- "0"
+        gsub("[[:space:]].*", "", splat_out, perl = TRUE)
+      })
+      
+      data.frame(DEPS = unlist(splitDeps, use.names = FALSE),
+                 VERS = unlist(splitVers, use.names = FALSE),
+                 stringsAsFactors = FALSE)
     })
     
-    deps <- unique(unlist(DEPS))
-    deps <- dropSystemPackages(deps)
+    DEPS_VERSIONS <- do.call("rbind",DEPS_VERSIONS) 
+    
+    DEPS_VERSIONS <- DEPS_VERSIONS[order(DEPS_VERSIONS$VERS,decreasing = TRUE),]
+    
+    DEPS_VERSIONS <- DEPS_VERSIONS[!duplicated(DEPS_VERSIONS$DEPS),]
+    
+    deps_version <- DEPS_VERSIONS[!areBasePackages(DEPS_VERSIONS$DEPS),]
     
     lapply(pkgs_to_download,unlink,recursive = TRUE)
     
-        
-    pkgs_to_download <- deps[!(deps %in% row.names(installed.packages()) | packages_are_downloaded(deps,path))]
+    
+    pkgs_to_download <- deps_version$DEPS[!(packages_are_installed(deps_version$DEPS,deps_version$VERS) | packages_are_downloaded(path,deps_version$DEPS,deps_version$VERS))]
     
     
     
@@ -71,18 +87,33 @@ download_packages_and_deps <- function(pkgs,
 #' @examples install_locale_packages()
 install_locale_packages <- function(path = "extrapackages/") {
   
-  downloaded_packages_file <- list.files(path, full.names = TRUE)
+  downloaded_packages_file_complete <- list.files(path, full.names = TRUE)
   
-  downloaded_packages_name <- gsub("(^.*)(_.*)","\\1",list.files(path))
+  downloaded_packages_file <- list.files(path, full.names = FALSE)
   
-  packages_to_intall_file <- downloaded_packages_file[!(downloaded_packages_name %in% row.names(installed.packages()))]
+  downloaded_packages_name <- gsub("(^.*)(_.*)","\\1",downloaded_packages_file)
+  
+  downloaded_packages_version <- gsub("(^.*_)(.*)(\\.tar\\.gz)","\\2",downloaded_packages_file)
+  
+  downloaded_packages <- data.frame(name = downloaded_packages_name, version = downloaded_packages_version, file = downloaded_packages_file_complete, stringsAsFactors = FALSE)
+  
+  downloaded_packages <- downloaded_packages[order(downloaded_packages$version, decreasing = TRUE),]
+  
+  downloaded_packages <- downloaded_packages[!duplicated(downloaded_packages$name),]
   
   
-  while (length( packages_to_intall_file) > 0 ) {
+  packages_to_install_file <- downloaded_packages$file[!packages_are_installed(downloaded_packages$name,downloaded_packages$version)]
+  
+  
+  
+  while (length( packages_to_install_file) > 0 ) {
     
-    lapply(packages_to_intall_file, install.packages, repos = NULL)
+    browser()
     
-    packages_to_intall_file <- downloaded_packages_file[!(downloaded_packages_name %in% row.names(installed.packages()))]
+    
+    lapply(packages_to_install_file, install.packages, repos = NULL)
+    
+    packages_to_install_file <- downloaded_packages$file[!packages_are_installed(downloaded_packages$name,downloaded_packages$version)]
     
   }
   
@@ -105,9 +136,9 @@ readDcf <- function(...) {
 # DCF.
 combineDcfFields <- function(dcfFrame, fields) {
   unique(unlist(lapply(fields, function(field) {
-    gsub("\\s.*", "", unlist(
+    unlist(
       strsplit(
-        gsub("^\\s*", "", as.character(dcfFrame[[field]])), "\\s*,\\s*")))
+        gsub("^\\s*", "", as.character(dcfFrame[[field]])), "\\s*,\\s*"))
   })))
 }
 
@@ -136,6 +167,11 @@ discoverBaseRecommendedPackages <- function() {
   
 }
 
+areBasePackages <- function(packages) {
+  pkgs <- discoverBaseRecommendedPackages()
+  packages %in% c("R", pkgs$base)
+}
+
 
 excludeBasePackages <- function(packages) {
   pkgs <- discoverBaseRecommendedPackages()
@@ -155,14 +191,65 @@ dropSystemPackages <- function(packages) {
 
 
 
-packages_are_downloaded <- function(pkgs, path) {
+packages_are_downloaded <- function(path, pkgs, versions = "0") {
+  
+  
+  
   
   pkgs_downloaded <- list.files(path, full.names = FALSE, recursive = FALSE)
   
-  pkgs %in% gsub("(^.*)(_.*)","\\1",pkgs_downloaded)
+  mapply(function(pkcs,version){
+    
+    positions <- grep(pkcs,pkgs_downloaded)
+    
+    if (length(positions) == 0) {
+      
+      return(FALSE)
+      
+    } else {
+      
+      versions <- gsub("(^.*_)(.*)(\\.tar\\.gz)","\\2",pkgs_downloaded)
+      
+      recent_version <- max(versions[positions])
+      
+      return(recent_version >= version)
+      
+    }
+  }, pkgs, versions, SIMPLIFY = TRUE)
+    
+  
+
 }
 
+packages_are_installed <- function(pkgs, versions = "0") {
+  
 
+  
+  pkgs_installed <- as.data.frame.matrix(installed.packages(),stringsAsFactors = FALSE)
+  
+  mapply(function(pkg,version){
+    
+    
+    positions <- which(pkg == pkgs_installed$Package)
+    
+    if (length(positions) == 0) {
+      
+      return(FALSE)
+      
+    } else {
+      
+      versions <- pkgs_installed$Version[positions]
+      
+      recent_version <- max(versions)
+      
+      return(recent_version >= version)
+      
+    }
+  }, pkgs, versions, SIMPLIFY = TRUE)
+  
+  
+  
+}
 
 
 
