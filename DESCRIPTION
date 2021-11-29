@@ -1,22 +1,22 @@
 Package: izertisr
 Title: Librería con funciones muy utilizadas en el trabajo en Izertis de desarrollo propio.
-Version: 1.0.0
+Version: 1.0.1
 Authors@R: 
     person(given = "Pablo",
            family = "Rodriguez",
            role = c("aut", "cre"),
            email = "pablo.lopez@izertis.com",
            comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+Description: Paquete de R en el que se encuentran plantillas de RMarkdown, themes para representación gráfica con ggplot, y funciones muy utilizas en el trabajo de exploración de datos en Izertis
+License: `use_mit_license()`, `use_gpl3_license()` 
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 Imports: 
     ggplot2,
-    rmarkdown
+    rmarkdown,
+    RPostgreSQL
 Depends: 
     R (>= 2.10)
 Suggests: 
